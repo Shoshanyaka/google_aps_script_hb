@@ -1,0 +1,350 @@
+tableDoc = SpreadsheetApp.openById("1TabCWEMTYAq8r0LfgvXaN7ge28kXfX1Z1brSjEgVFoQ");
+currentSheet = SpreadsheetApp.getActiveSheet();
+const folderToSave = '179yKHI2qqRdBBS79Kn5V3NydJwConbHJ';
+const folderWithTemplate = '19sShuAeRpnp-wY8pyVI0VZqtWayo0YNR';
+const apiMatterMostPAT = ***;
+const gateBackPAT = ***;
+const channelId = ***
+const leng = currentSheet.getRange("L11").getValue();
+//ссылка на картинку кота на s3 img.mygenetics.ru
+const hb_cat = 'https://img.mygenetics.ru/101021524_0__2_.jpg'
+//ссылка на картинку шариков на s3 img.mygenetics.ru
+const hb_ballons = 'https://img.mygenetics.ru/%D1%81_%D0%B4%D0%BD%D0%B5%D0%BC_%D1%80%D0%BE%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D1%8F__1_.webp'
+//ссылка на картинку годовщины работы на s3 img.mygenetics.ru
+const work_ann = 'https://img.mygenetics.ru/%D1%81_%D0%B3%D0%BE%D0%B4%D0%BE%D0%B2%D1%89%D0%B8%D0%BD%D0%BE%D0%B9_%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B.jpg'
+const hb_1 = 'https://img.mygenetics.ru/image%20%2820%29.png'
+const hb_2 = 'https://img.mygenetics.ru/image%20%2818%29.png'
+const hb_3 = 'https://img.mygenetics.ru/image%20%2816%29.png'
+const hb_4 = 'https://img.mygenetics.ru/image%20%2817%29.png'
+const hb_5 = 'https://img.mygenetics.ru/image%20%2812%29.png'
+const hb_6 = 'https://img.mygenetics.ru/image%20%2814%29.png'
+const hb_7 = 'https://img.mygenetics.ru/image%20%285%29.png'
+const hb_8 = 'https://img.mygenetics.ru/image%20%289%29.png'
+const hb_9 = 'https://img.mygenetics.ru/image%20%284%29.png'
+const hb_10 = 'https://img.mygenetics.ru/image%20%283%29.png'
+
+
+function checkData() {
+  const date = new Date();
+  const day = date.getDate();
+  var month = date.getMonth() + 1;
+  var year = date.getFullYear();
+  //чтение поздравлений из ячеек и заведение массива поздравлений
+  var rr = new Array(13);
+  for (i = 2; i <= 14; i++) {
+    rr[i] = currentSheet.getRange("N" + i).getValue();
+  }
+  //заведение массива поздравительных картинок
+  var randomImg = new Array(11);
+  //randomImg[1] = hb_cat;
+  randomImg[1] = hb_ballons; 
+  randomImg[2] = hb_1;
+  randomImg[3] = hb_2;
+  // randomImg[4] = hb_3;
+  randomImg[4] = hb_4;
+  randomImg[5] = hb_5;
+  randomImg[6] = hb_6;
+  randomImg[7] = hb_7;
+  randomImg[8] = hb_8;
+  randomImg[9] = hb_9;
+  randomImg[10] = hb_10;
+  console.info(day, month, randomIndex,randomIndexImg);
+
+  //отправляем ссылку на доку с оплатами 5 и 20 числа
+  if ((day == "20") || (day == "5")){
+      var url = "***";
+      var payload = {
+        /**
+        * тестовый канал 123
+        * it it
+        * общий чат town-square
+        */
+        "channel": "it",
+        "attachments": [
+          {
+            "text": "Проверь сервисы, их надо бы оплатить\nhttps://docs.google.com/spreadsheets/d/1_F0a-xcXRapz5r_q4oBgovmz01WECV03NValXnMsZhE/",
+          }
+        ]
+      };
+      var options = {
+        'method': 'post',
+        'contentType': 'application/json',
+        'payload': JSON.stringify(payload)
+      };
+      var response = UrlFetchApp.fetch(url, options);
+  }
+  for (i = 2; i <= leng; i++) {
+  // ячейка к9  содержит число индекса картинки `_${month}_${year}`
+  var randomIndexImg = currentSheet.getRange("K9").getValue();
+  if (randomIndexImg > 10) {
+    randomIndexImg = 1;
+  }
+  // var randomIndexImg = Math.floor(Math.random() * 11);
+  // if (randomIndexImg === 0) {
+  // randomIndexImg = 2;
+  // }
+    const docDate = new Date(currentSheet.getRange("A" + i).getValue());
+    const docDay = docDate.getDate();
+    const docYear = docDate.getFullYear();
+    const docMonth = docDate.getMonth() + 1;
+    console.info(docDate, docMonth, randomIndex,randomIndexImg);
+    // блок проверки дня рождения
+    if ((day === docDay) && (month === docMonth)) {
+      var randomIndex = Math.floor(Math.random() * rr.length);
+      if ((randomIndex === 0) || (randomIndex === 1)) {
+        randomIndex = 2;
+      }
+      
+      var name = currentSheet.getRange("B" + i).getValue();
+      console.info(randomIndex, name);
+      var url = "***";
+      var payload = {
+        /**
+        * тестовый канал 123
+        * it it
+        * общий чат town-square
+        */
+        "channel": "town-square",
+        "attachments": [
+          {
+            "text": name + "! \n" + rr[randomIndex] + "  ",
+            "image_url": randomImg[randomIndexImg]
+          }
+        ]
+      };
+
+      var options = {
+        'method': 'post',
+        'contentType': 'application/json',
+        'payload': JSON.stringify(payload)
+      };
+      var response = UrlFetchApp.fetch(url, options);
+      randomIndexImg = randomIndexImg + 1;
+      randomIndexImg = currentSheet.getRange("K9").setValue(`${randomIndexImg}`);
+    }
+  }
+  // блок проверки годовщины работы
+  for (j = 2; j <= leng; j++) {
+    const docDate = new Date(currentSheet.getRange("C" + j).getValue());
+    const docDay = docDate.getDate();
+    const docYear = docDate.getFullYear();
+    const docMonth = docDate.getMonth() + 1;
+    var checkDay = day - docDay;
+    var checkMonth = month - docMonth;
+    if ((checkMonth === 0) & (checkDay === 0)) {
+      //  var checkYear = docYear - year;
+      var name = currentSheet.getRange("B" + j).getValue();
+      var url = "***";
+      var payload = {
+        /**
+        * тестовый канал 123
+        * it it
+        * общий чат town-square
+        */
+        "channel": "town-square",
+        "attachments": [
+          {
+            "text": name + ", работает с нами с " + docDay + "." + docMonth + "." + docYear + "\nПоздравляем с круглой датой!",
+            "image_url": work_ann
+          }
+        ]
+      };
+
+      var options = {
+        'method': 'post',
+        'contentType': 'application/json',
+        'payload': JSON.stringify(payload)
+      };
+      var response = UrlFetchApp.fetch(url, options);
+    }
+  }
+  //блок проверки отправки ежемесячной картинки
+  let blob_ready = currentSheet.getRange("L9").getValue();
+  if (blob_ready === `_${month}_${year}`) {
+    return
+  }
+  let persons = new Array();
+
+  for (i = 2; i <= leng; i++) {
+    let obj = {};
+    let docDate = new Date(currentSheet.getRange("A" + i).getValue());
+    let docDay = docDate.getDate();
+    let docYear = docDate.getFullYear();
+    let docMonth = docDate.getMonth() + 1;
+    let str = `${docDay}.${docMonth}`;
+    if (docMonth === month) {
+      obj.name = currentSheet.getRange("B" + i).getValue();
+      obj.date = str;
+      persons.push(obj);
+      console.info(persons);
+    }
+  }
+  blob_ready = currentSheet.getRange("L9").setValue(`_${month}_${year}`);
+
+  loadImageWithText(
+    searchBirthImage(folderWithTemplate),
+    persons
+  );
+}
+
+/**
+ * delete file by url
+ * @param string fileLink
+ * 
+ * @return void
+ */
+function deleteFileByLink(fileLink) {
+  let fileId = fileLink.match(/[-\w]{25,}/);
+  if (fileId) {
+    DriveApp.getFileById(fileId[0]).setTrashed(true);
+  }
+}
+
+/**
+ * send message with image to channel
+ * @param string text
+ * @param string imageUrl
+ * 
+ * @return void
+ */
+async function sendMsgMatterMost(payload, cb = null) {
+  let url = "***";
+
+
+  let options = {
+    'method': 'post',
+    'contentType': 'application/json',
+    'payload': JSON.stringify(payload)
+  };
+
+  let response = await UrlFetchApp.fetch(url, options);
+
+  if (cb !== null) {
+    cb(response);
+  }
+}
+
+
+/**
+ * @param string folderId
+ * @return obj {0:string file in base 64,1:string file name}
+ */
+function searchBirthImage(folderId) {
+
+  let sourceFolder = DriveApp.getFolderById(folderId);
+  let files = sourceFolder.getFilesByType(MimeType.JPEG);
+
+  let fs = [];
+
+  while (files.hasNext()) {
+    fs.push(files.next());
+  }
+
+  let file = shuffleArray(fs)[0];
+  let fileName = file.getName();
+  let blob = file.getBlob();
+  let base64Image = Utilities.base64Encode(blob.getBytes());
+
+  return {base64Image, fileName}; 
+}
+
+/**
+ * random order
+ * @param object array
+ * @return object
+ */
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+/**
+ * @param obj imgInfo 
+ * @param object persons - массив объектов с данными пользователя example : [{"name" : "Some Name" , "date" : "some date"},{...}]  
+ * 
+ * @return string
+ */
+function loadImageWithText(imgInfo, persons) {
+  let {base64Image, fileName} = imgInfo;
+
+  let coordinates = JSON.parse(fileName);
+
+  let data = {
+    "imageBase64": base64Image,
+    "persons": persons,
+    "x" : coordinates.x,
+    "y" : coordinates.y, 
+  };
+
+  let options = {
+    'method': 'post',
+    'contentType': 'application/json',
+    'headers': {
+      'Accept': 'application/json',
+      'Authorization': gateBackPAT,
+    },
+    'payload': JSON.stringify(data),
+    'muteHttpExceptions': true
+  };
+
+  let response = UrlFetchApp.fetch('***', options);
+  let responseBody = response.getContentText();
+  let responseCode = response.getResponseCode();
+
+  if (responseCode !== 200) {
+    return false;
+  }
+
+  sendMatterMostHBImage(
+    JSON.parse(responseBody).data.split(',')[1],
+    'Именники в текущем месяце!',
+    'ticr4uhcptyw8pihkcmqu5bxcc' //заменить
+  );
+
+
+}
+
+/**
+ * send to chat image via api
+ * 
+ * @param string base64
+ * @param string text
+ * @param string channelId
+ * 
+ * @return void
+ */
+function sendMatterMostHBImage(base64, text, channelId) {
+  let blobFile = Utilities.newBlob(Utilities.base64Decode(base64));
+  let form = FetchApp.createFormData();
+  form.append("files.jpg", blobFile);
+
+  let resp = FetchApp.fetch(`***`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiMatterMostPAT}` },
+    body: form,
+  });
+
+  let fileResponse = JSON.parse(resp.getContentText());
+  let fileId = fileResponse.file_infos[0].id;
+
+  let postData = {
+    "channel_id": channelId,
+    "message": text,
+    "file_ids": [fileId]
+  };
+
+  let postOptions = {
+    'method': 'post',
+    'contentType': 'application/json',
+    'headers': {
+      'Authorization': `Bearer ${apiMatterMostPAT}`
+    },
+    'payload': JSON.stringify(postData)
+  };
+
+  UrlFetchApp.fetch('***', postOptions);
+
+}
